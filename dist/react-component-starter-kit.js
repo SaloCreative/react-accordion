@@ -60,11 +60,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _YourComponent = __webpack_require__(1);
+	var _Accordion = __webpack_require__(1);
 
-	var _YourComponent2 = _interopRequireDefault(_YourComponent);
+	var _Accordion2 = _interopRequireDefault(_Accordion);
 
-	exports['default'] = { YourComponent: _YourComponent2['default'] };
+	exports['default'] = { Accordion: _Accordion2['default'] };
 	module.exports = exports['default'];
 
 /***/ },
@@ -85,18 +85,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var YourComponent = (function (_Component) {
-	  _inherits(YourComponent, _Component);
+	var Accordion = (function (_Component) {
+	  _inherits(Accordion, _Component);
 
-	  function YourComponent(props) {
-	    _classCallCheck(this, YourComponent);
+	  function Accordion(props) {
+	    _classCallCheck(this, Accordion);
 
 	    _Component.call(this, props);
 
 	    this.state = {};
 	  }
 
-	  YourComponent.prototype.render = function render() {
+	  Accordion.prototype.render = function render() {
 	    return _react2['default'].createElement(
 	      'div',
 	      { className: 'your-component' },
@@ -104,14 +104,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  };
 
-	  return YourComponent;
+	  return Accordion;
 	})(_react.Component);
 
-	exports['default'] = YourComponent;
+	exports['default'] = Accordion;
 
-	YourComponent.defaultProps = {};
+	Accordion.defaultProps = {};
 
-	YourComponent.propTypes = {};
+	Accordion.propTypes = {};
 	module.exports = exports['default'];
 
 /***/ },

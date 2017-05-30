@@ -1,5 +1,5 @@
 'use strict';
 
-import YourComponent from './YourComponent';
+import Accordion from './Accordion';
 
-export default YourComponent;
+export default Accordion;
