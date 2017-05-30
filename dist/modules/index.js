@@ -8,5 +8,5 @@ var _Accordion = require('./Accordion');
 
 var _Accordion2 = _interopRequireDefault(_Accordion);
 
-exports['default'] = { Accordion: _Accordion2['default'] };
+exports['default'] = _Accordion2['default'];
 module.exports = exports['default'];
