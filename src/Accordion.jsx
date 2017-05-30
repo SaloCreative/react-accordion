@@ -1,7 +1,23 @@
 'use strict';
 
 import React, { Component, PropTypes } from 'react';
+import injectSheet from 'react-jss'
 
+const styles = {
+  button: {
+    background: 'none',
+    border: 'none',
+    '&:hover': {
+      background: '#00aced'
+    }
+  },
+  label: {
+    fontWeight: 'bold'
+  }
+};
+
+
+@injectSheet(styles)
 export default class Accordion extends Component {
 
   constructor(props) {
@@ -11,10 +27,13 @@ export default class Accordion extends Component {
   }
 
   render() {
+    const { classes } = this.props;
     return (
-      <div className="your-component">
-        Hello, world!
-      </div>
+        <button className={ classes.button }>
+          <span className='label'>
+            Test
+          </span>
+        </button>
     );
   }
 
