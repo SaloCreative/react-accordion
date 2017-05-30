@@ -9,21 +9,24 @@ const styles = {
     width: '100%'
   },
   accordionItem: {
-    borderBottom: '1px solid #fff'
+    borderBottom: props => props.styles.contentBackground
   },
   accordionTitle: {
     padding: '20px',
     margin: '0',
     cursor: 'pointer',
-    background: '#F7F8F9',
+    background: props => props.styles.titleBackground,
+    color:  props => props.styles.titleColor,
     '.active &': {
-      background: '#000',
-      color: '#fff'
+      background: props => props.styles.titleBackgroundActive,
+      color:  props => props.styles.titleColorActive
     }
   },
   accordionContent: {
     display: 'none',
     padding: '20px',
+    background: props => props.styles.contentBackground,
+    color: props => props.styles.contentColor,
     '.active &': {
       display: 'block'
     }
@@ -82,8 +85,21 @@ export default class Accordion extends Component {
   }
 }
 
-Accordion.propTypes = {
-  data: PropTypes.array.isRequired
+Accordion.defaultProps = {
+  styles: {
+    titleBackground: '#F7F8F9',
+    titleColor: '#000',
+    titleBackgroundActive: '#000',
+    titleColorActive: '#fff',
+    contentBackground: '#fff',
+    contentColor: '#000'
+  }
 };
+
+Accordion.propTypes = {
+  data: PropTypes.array.isRequired,
+  styles: PropTypes.object
+};
+
 
 export default injectSheet(styles)(Accordion)

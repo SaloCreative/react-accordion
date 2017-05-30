@@ -8,6 +8,7 @@ import Accordion from '../src/Accordion';
 class Demo extends React.Component {
 
   render() {
+
     const data = [
       {
         label: 'Accordion label 1',
@@ -18,6 +19,7 @@ class Demo extends React.Component {
         content: 'Lorem ipsum dolor sit amet'
       }
     ];
+
     return (
       <Accordion { ...this.props } data={ data } />
     );

@@ -105,21 +105,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	    width: '100%'
 	  },
 	  accordionItem: {
-	    borderBottom: '1px solid #fff'
+	    borderBottom: function borderBottom(props) {
+	      return props.styles.contentBackground;
+	    }
 	  },
 	  accordionTitle: {
 	    padding: '20px',
 	    margin: '0',
 	    cursor: 'pointer',
-	    background: '#F7F8F9',
+	    background: function background(props) {
+	      return props.styles.titleBackground;
+	    },
+	    color: function color(props) {
+	      return props.styles.titleColor;
+	    },
 	    '.active &': {
-	      background: '#000',
-	      color: '#fff'
+	      background: function background(props) {
+	        return props.styles.titleBackgroundActive;
+	      },
+	      color: function color(props) {
+	        return props.styles.titleColorActive;
+	      }
 	    }
 	  },
 	  accordionContent: {
 	    display: 'none',
 	    padding: '20px',
+	    background: function background(props) {
+	      return props.styles.contentBackground;
+	    },
+	    color: function color(props) {
+	      return props.styles.contentColor;
+	    },
 	    '.active &': {
 	      display: 'block'
 	    }
@@ -168,6 +185,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return AccordionItem;
 	})(_react.Component);
 
+	AccordionItem.propTypes = {
+	  data: _react.PropTypes.array.isRequired,
+	  i: _react.PropTypes.number.isRequired,
+	  classes: _react.PropTypes.object.isRequired
+	};
+
 	var Accordion = (function (_Component2) {
 	  _inherits(Accordion, _Component2);
 
@@ -208,8 +231,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports['default'] = Accordion;
 
+	Accordion.defaultProps = {
+	  styles: {
+	    titleBackground: '#F7F8F9',
+	    titleColor: '#000',
+	    titleBackgroundActive: '#000',
+	    titleColorActive: '#fff',
+	    contentBackground: '#fff',
+	    contentColor: '#000'
+	  }
+	};
+
 	Accordion.propTypes = {
-	  data: _react.PropTypes.array.isRequired
+	  data: _react.PropTypes.array.isRequired,
+	  styles: _react.PropTypes.object
 	};
 
 	exports['default'] = (0, _reactJss2['default'])(styles)(Accordion);
