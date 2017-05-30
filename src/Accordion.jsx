@@ -37,12 +37,14 @@ class AccordionItem extends Component {
   render() {
     const { classes, i, item, active } = this.props;
     let activeClass= '';
-    if (i === active) {
+    if (i == active) {
       activeClass = 'active';
     }
     return (
       <div className={ `accordion__item ${ classes.accordionItem } ${ activeClass }` } >
-        <h4 className={ `accordion__title ${ classes.accordionTitle }` } >
+        <h4 className={ `accordion__title ${ classes.accordionTitle }` }
+            data-index={ i }
+            onClick={ this.props.itemClicked(i) }>
           { item.label }
         </h4>
         <div className={ `accordion__content ${ classes.accordionContent }` } >
@@ -68,13 +70,24 @@ export default class Accordion extends Component {
     }
   }
 
+  toggleAccordion() {
+    return (e) => {
+     this.setState({activeTab: e.target.getAttribute('data-index')});
+    };
+  }
+
   render() {
     const { classes, data } = this.props;
     let accordionItems;
     if (data) {
       accordionItems = data.map(
         (item, i) =>
-          <AccordionItem { ...this.props } key={ i } i={ i } item={ item } active={ this.state.activeTab } />
+          <AccordionItem { ...this.props }
+              key={ i }
+              i={ i }
+              item={ item }
+              active={ this.state.activeTab }
+              itemClicked={ () => this.toggleAccordion() } />
       );
     }
     return (
