@@ -162,7 +162,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var active = _props.active;
 
 	      var activeClass = '';
-	      if (i === active) {
+	      if (i == active) {
 	        activeClass = 'active';
 	      }
 	      return _react2['default'].createElement(
@@ -170,7 +170,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        { className: 'accordion__item ' + classes.accordionItem + ' ' + activeClass },
 	        _react2['default'].createElement(
 	          'h4',
-	          { className: 'accordion__title ' + classes.accordionTitle },
+	          { className: 'accordion__title ' + classes.accordionTitle,
+	            'data-index': i,
+	            onClick: this.props.itemClicked(i) },
 	          item.label
 	        ),
 	        _react2['default'].createElement(
@@ -204,9 +206,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  _createClass(Accordion, [{
+	    key: 'toggleAccordion',
+	    value: function toggleAccordion() {
+	      var _this = this;
+
+	      return function (e) {
+	        _this.setState({ activeTab: e.target.getAttribute('data-index') });
+	      };
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this = this;
+	      var _this2 = this;
 
 	      var _props2 = this.props;
 	      var classes = _props2.classes;
@@ -215,7 +226,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var accordionItems = undefined;
 	      if (data) {
 	        accordionItems = data.map(function (item, i) {
-	          return _react2['default'].createElement(AccordionItem, _extends({}, _this.props, { key: i, i: i, item: item, active: _this.state.activeTab }));
+	          return _react2['default'].createElement(AccordionItem, _extends({}, _this2.props, {
+	            key: i,
+	            i: i,
+	            item: item,
+	            active: _this2.state.activeTab,
+	            itemClicked: function () {
+	              return _this2.toggleAccordion();
+	            } }));
 	        });
 	      }
 	      return _react2['default'].createElement(

@@ -1,6 +1,6 @@
 {
   "name": "@salocreative/react-accordion",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Simple React accordion component.",
   "main": "./dist/modules/index.js",
   "scripts": {
