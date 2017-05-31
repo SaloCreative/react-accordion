@@ -9,7 +9,8 @@ const styles = {
     width: '100%'
   },
   accordionItem: {
-    borderBottom: props => props.styles.contentBackground
+    borderBottom: '1px solid',
+    borderColor: props => props.styles.contentBackground
   },
   accordionTitle: {
     padding: '20px',
