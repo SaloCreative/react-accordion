@@ -27,6 +27,17 @@ const data = [
   {
     label: 'Accordion label 2',
     content: 'Lorem ipsum dolor sit amet'
+  },
+  {
+    label: 'Example with jsx',
+    content: (
+      <div>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec scelerisque quis est eget vestibulum.
+          Donec urna lorem, ornare non sollicitudin a, euismod quis purus.</p>
+        <img src='https://placeholdit.imgix.net/~text?txtsize=24&txt=Image&w=150&h=150' />
+        <p><button>A button</button></p>
+      </div>
+    )
   }
 ];
 
