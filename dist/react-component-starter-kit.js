@@ -105,7 +105,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    width: '100%'
 	  },
 	  accordionItem: {
-	    borderBottom: function borderBottom(props) {
+	    borderBottom: '1px solid',
+	    borderColor: function borderColor(props) {
 	      return props.styles.contentBackground;
 	    }
 	  },
