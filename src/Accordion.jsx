@@ -24,33 +24,35 @@ const styles = {
     }
   },
   accordionContent: {
-    display: 'none',
     padding: '20px',
     background: props => props.styles.contentBackground,
-    color: props => props.styles.contentColor,
-    '.active &': {
-      display: 'block'
-    }
+    color: props => props.styles.contentColor
   }
 };
 
 class AccordionItem extends Component {
-  render() {
+  renderContent() {
     const { classes, i, item, active } = this.props;
-    let activeClass= '';
     if (i == active) {
-      activeClass = 'active';
+      return (
+        <div className={ `accordion__content ${ classes.accordionContent }` } >
+          { item.content }
+        </div>
+      );
     }
+    return null
+  }
+
+  render() {
+    const { classes, i, item } = this.props;
     return (
-      <div className={ `accordion__item ${ classes.accordionItem } ${ activeClass }` } >
+      <div className={ `accordion__item ${ classes.accordionItem }` } >
         <h4 className={ `accordion__title ${ classes.accordionTitle }` }
             data-index={ i }
             onClick={ this.props.itemClicked(i) }>
           { item.label }
         </h4>
-        <div className={ `accordion__content ${ classes.accordionContent }` } >
-          { item.content }
-        </div>
+        { this.renderContent() }
       </div>
     );
   }
