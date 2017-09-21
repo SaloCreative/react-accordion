@@ -45,7 +45,7 @@ const data = [
 
 ```
 
-###Cofiguration options
+### Cofiguration options
 
 as well as passing in the data array to populate the accordion you can also use the following config options:
 
