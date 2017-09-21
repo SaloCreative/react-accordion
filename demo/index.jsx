@@ -7,6 +7,22 @@ import Accordion from '../src/Accordion';
 
 class Demo extends React.Component {
 
+  constructor() {
+    super();
+    this.state = {
+      closeAll: '',
+      openAll: ''
+    }
+  }
+
+  closeAll() {
+    this.setState({ closeAll: Date.now() })
+  }
+
+  openAll() {
+    this.setState({ openAll: Date.now() })
+  }
+
   render() {
 
     const data = [
@@ -36,7 +52,11 @@ class Demo extends React.Component {
     ];
 
     return (
-      <Accordion { ...this.props } data={ data } />
+      <div>
+        <a onClick={ () => this.closeAll() }>Close All</a>&nbsp; &nbsp;<a onClick={ () => this.openAll() }>Open All</a>
+        <br /><br />
+        <Accordion data={ data } closeAll={ this.state.closeAll } openAll={ this.state.openAll } />
+      </div>
     );
   }
 

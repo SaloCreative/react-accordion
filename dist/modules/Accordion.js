@@ -144,12 +144,21 @@ var Accordion = (function (_Component2) {
   }
 
   Accordion.prototype.componentDidMount = function componentDidMount() {
-    console.log(this.props.firstOpen);
     if (this.props.firstOpen) {
       this.setState({
         activeTab: 0,
         activeTabs: [0]
       });
+    }
+  };
+
+  Accordion.prototype.componentDidUpdate = function componentDidUpdate(prevProps) {
+    if (this.props.closeAll || this.props.openAll) {
+      if (this.props.closeAll !== prevProps.closeAll) {
+        this.closeAll();
+      } else if (this.props.openAll !== prevProps.openAll) {
+        this.openAll();
+      }
     }
   };
 
@@ -176,6 +185,18 @@ var Accordion = (function (_Component2) {
     } else {
       this.setState({ activeTabs: [].concat(this.state.activeTabs, [i]) });
     }
+  };
+
+  Accordion.prototype.closeAll = function closeAll() {
+    this.setState({ activeTabs: [], activeTab: '' });
+  };
+
+  Accordion.prototype.openAll = function openAll() {
+    var arr = [];
+    this.props.data.forEach(function (value, i) {
+      arr.push(i);
+    });
+    this.setState({ activeTabs: arr, activeTab: 0 });
   };
 
   Accordion.prototype.render = function render() {
