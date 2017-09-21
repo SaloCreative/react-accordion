@@ -33,7 +33,7 @@ const styles = {
 class AccordionItem extends Component {
   renderContent() {
     const { classes, i, item, active } = this.props;
-    if (i == active) {
+    if (i === active) {
       return (
         <div className={ `accordion__content ${ classes.accordionContent }` } >
           { item.content }
@@ -48,8 +48,7 @@ class AccordionItem extends Component {
     return (
       <div className={ `accordion__item ${ classes.accordionItem }` } >
         <h4 className={ `accordion__title ${ classes.accordionTitle }` }
-            data-index={ i }
-            onClick={ this.props.itemClicked(i) }>
+            onClick={ () => this.props.itemClicked(i) }>
           { item.label }
         </h4>
         { this.renderContent() }
@@ -69,14 +68,23 @@ export default class Accordion extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeTab: 0
+      activeTab: ''
     }
   }
 
-  toggleAccordion() {
-    return (e) => {
-     this.setState({activeTab: e.target.getAttribute('data-index')});
-    };
+  componentDidMount() {
+    console.log(this.props.firstOpen);
+    if (this.props.firstOpen) {
+      this.setState({ activeTab: 0 });
+    }
+  }
+
+  toggleAccordion(i) {
+    if (this.props.activeClickClose && i === this.state.activeTab) {
+      this.setState({ activeTab: '' });
+    } else {
+      this.setState({ activeTab: i });
+    }
   }
 
   render() {
@@ -90,7 +98,7 @@ export default class Accordion extends Component {
               i={ i }
               item={ item }
               active={ this.state.activeTab }
-              itemClicked={ () => this.toggleAccordion() } />
+              itemClicked={ (i) => this.toggleAccordion(i) } />
       );
     }
     return (
@@ -109,12 +117,18 @@ Accordion.defaultProps = {
     titleColorActive: '#fff',
     contentBackground: '#fff',
     contentColor: '#000'
-  }
+  },
+  multipleOpen: false,
+  firstOpen: true,
+  activeClickClose: true
 };
 
 Accordion.propTypes = {
   data: PropTypes.array.isRequired,
-  styles: PropTypes.object
+  styles: PropTypes.object,
+  multipleOpen: PropTypes.bool,
+  activeClickClose: PropTypes.bool,
+  firstOpen: PropTypes.bool
 };
 
 
