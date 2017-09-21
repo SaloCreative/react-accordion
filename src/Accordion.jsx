@@ -31,9 +31,20 @@ const styles = {
 };
 
 class AccordionItem extends Component {
+
+  shouldRender() {
+    const { i, active, multipleOpen } = this.props;
+    if (multipleOpen) {
+      return active.activeTabs.includes(i);
+    } else {
+      return active.activeTab === i;
+    }
+  }
+
   renderContent() {
-    const { classes, i, item, active } = this.props;
-    if (i == active) {
+    const { classes, item } = this.props;
+    const shouldRender = this.shouldRender();
+    if (shouldRender) {
       return (
         <div className={ `accordion__content ${ classes.accordionContent }` } >
           { item.content }
@@ -48,8 +59,7 @@ class AccordionItem extends Component {
     return (
       <div className={ `accordion__item ${ classes.accordionItem }` } >
         <h4 className={ `accordion__title ${ classes.accordionTitle }` }
-            data-index={ i }
-            onClick={ this.props.itemClicked(i) }>
+            onClick={ () => this.props.itemClicked(i) }>
           { item.label }
         </h4>
         { this.renderContent() }
@@ -61,7 +71,8 @@ class AccordionItem extends Component {
 AccordionItem.propTypes = {
   data: PropTypes.array.isRequired,
   i: PropTypes.number.isRequired,
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  multipleOpen: PropTypes.bool
 };
 
 export default class Accordion extends Component {
@@ -69,28 +80,68 @@ export default class Accordion extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeTab: 0
+      activeTab: '',
+      activeTabs: [] // If we use the multiple open options
     }
   }
 
-  toggleAccordion() {
-    return (e) => {
-     this.setState({activeTab: e.target.getAttribute('data-index')});
-    };
+  componentDidMount() {
+    console.log(this.props.firstOpen);
+    if (this.props.firstOpen) {
+      this.setState(
+        {
+          activeTab: 0,
+          activeTabs: [0]
+        }
+      );
+    }
+  }
+
+  toggleAccordion(i) {
+    if (!this.props.multipleOpen) {
+      this.toggleAccordionSingle(i);
+    } else {
+      this.toggleAccordionMultiple(i);
+    }
+  }
+
+  toggleAccordionSingle(i) {
+    if (this.props.activeClickClose && i === this.state.activeTab) {
+      this.setState({ activeTab: '' });
+    } else {
+      this.setState({ activeTab: i });
+    }
+  }
+
+  toggleAccordionMultiple(i) {
+    if (this.state.activeTabs.includes(i)) {
+      const index = this.state.activeTabs.indexOf(i);
+      this.setState({ activeTabs: [
+        ...this.state.activeTabs.slice(0, index),
+        ...this.state.activeTabs.slice(index + 1)
+      ] });
+    } else {
+      this.setState({ activeTabs: [
+        ...this.state.activeTabs,
+        i
+      ] });
+    }
   }
 
   render() {
-    const { classes, data } = this.props;
+    const { classes, data, multipleOpen } = this.props;
     let accordionItems;
     if (data) {
       accordionItems = data.map(
         (item, i) =>
           <AccordionItem { ...this.props }
-              key={ i }
-              i={ i }
-              item={ item }
-              active={ this.state.activeTab }
-              itemClicked={ () => this.toggleAccordion() } />
+            key={ i }
+            i={ i }
+            item={ item }
+            active={ this.state }
+            itemClicked={ (i) => this.toggleAccordion(i) }
+            multipleOpen={ multipleOpen }
+          />
       );
     }
     return (
@@ -109,13 +160,18 @@ Accordion.defaultProps = {
     titleColorActive: '#fff',
     contentBackground: '#fff',
     contentColor: '#000'
-  }
+  },
+  multipleOpen: false,
+  firstOpen: true,
+  activeClickClose: true
 };
 
 Accordion.propTypes = {
   data: PropTypes.array.isRequired,
-  styles: PropTypes.object
+  styles: PropTypes.object,
+  multipleOpen: PropTypes.bool,
+  activeClickClose: PropTypes.bool,
+  firstOpen: PropTypes.bool
 };
-
 
 export default injectSheet(styles)(Accordion)

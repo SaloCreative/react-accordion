@@ -68,14 +68,26 @@ var AccordionItem = (function (_Component) {
     _Component.apply(this, arguments);
   }
 
-  AccordionItem.prototype.renderContent = function renderContent() {
+  AccordionItem.prototype.shouldRender = function shouldRender() {
     var _props = this.props;
-    var classes = _props.classes;
     var i = _props.i;
-    var item = _props.item;
     var active = _props.active;
+    var multipleOpen = _props.multipleOpen;
 
-    if (i == active) {
+    if (multipleOpen) {
+      return active.activeTabs.includes(i);
+    } else {
+      return active.activeTab === i;
+    }
+  };
+
+  AccordionItem.prototype.renderContent = function renderContent() {
+    var _props2 = this.props;
+    var classes = _props2.classes;
+    var item = _props2.item;
+
+    var shouldRender = this.shouldRender();
+    if (shouldRender) {
       return _react2['default'].createElement(
         'div',
         { className: 'accordion__content ' + classes.accordionContent },
@@ -86,10 +98,12 @@ var AccordionItem = (function (_Component) {
   };
 
   AccordionItem.prototype.render = function render() {
-    var _props2 = this.props;
-    var classes = _props2.classes;
-    var i = _props2.i;
-    var item = _props2.item;
+    var _this = this;
+
+    var _props3 = this.props;
+    var classes = _props3.classes;
+    var i = _props3.i;
+    var item = _props3.item;
 
     return _react2['default'].createElement(
       'div',
@@ -97,8 +111,9 @@ var AccordionItem = (function (_Component) {
       _react2['default'].createElement(
         'h4',
         { className: 'accordion__title ' + classes.accordionTitle,
-          'data-index': i,
-          onClick: this.props.itemClicked(i) },
+          onClick: function () {
+            return _this.props.itemClicked(i);
+          } },
         item.label
       ),
       this.renderContent()
@@ -111,7 +126,8 @@ var AccordionItem = (function (_Component) {
 AccordionItem.propTypes = {
   data: _react.PropTypes.array.isRequired,
   i: _react.PropTypes.number.isRequired,
-  classes: _react.PropTypes.object.isRequired
+  classes: _react.PropTypes.object.isRequired,
+  multipleOpen: _react.PropTypes.bool
 };
 
 var Accordion = (function (_Component2) {
@@ -122,24 +138,53 @@ var Accordion = (function (_Component2) {
 
     _Component2.call(this, props);
     this.state = {
-      activeTab: 0
+      activeTab: '',
+      activeTabs: [] // If we use the multiple open options
     };
   }
 
-  Accordion.prototype.toggleAccordion = function toggleAccordion() {
-    var _this = this;
+  Accordion.prototype.componentDidMount = function componentDidMount() {
+    console.log(this.props.firstOpen);
+    if (this.props.firstOpen) {
+      this.setState({
+        activeTab: 0,
+        activeTabs: [0]
+      });
+    }
+  };
 
-    return function (e) {
-      _this.setState({ activeTab: e.target.getAttribute('data-index') });
-    };
+  Accordion.prototype.toggleAccordion = function toggleAccordion(i) {
+    if (!this.props.multipleOpen) {
+      this.toggleAccordionSingle(i);
+    } else {
+      this.toggleAccordionMultiple(i);
+    }
+  };
+
+  Accordion.prototype.toggleAccordionSingle = function toggleAccordionSingle(i) {
+    if (this.props.activeClickClose && i === this.state.activeTab) {
+      this.setState({ activeTab: '' });
+    } else {
+      this.setState({ activeTab: i });
+    }
+  };
+
+  Accordion.prototype.toggleAccordionMultiple = function toggleAccordionMultiple(i) {
+    if (this.state.activeTabs.includes(i)) {
+      var index = this.state.activeTabs.indexOf(i);
+      this.setState({ activeTabs: [].concat(this.state.activeTabs.slice(0, index), this.state.activeTabs.slice(index + 1)) });
+    } else {
+      this.setState({ activeTabs: [].concat(this.state.activeTabs, [i]) });
+    }
   };
 
   Accordion.prototype.render = function render() {
     var _this2 = this;
 
-    var _props3 = this.props;
-    var classes = _props3.classes;
-    var data = _props3.data;
+    var _props4 = this.props;
+    var classes = _props4.classes;
+    var data = _props4.data;
+    var multipleOpen = _props4.multipleOpen;
 
     var accordionItems = undefined;
     if (data) {
@@ -148,10 +193,12 @@ var Accordion = (function (_Component2) {
           key: i,
           i: i,
           item: item,
-          active: _this2.state.activeTab,
-          itemClicked: function () {
-            return _this2.toggleAccordion();
-          } }));
+          active: _this2.state,
+          itemClicked: function (i) {
+            return _this2.toggleAccordion(i);
+          },
+          multipleOpen: multipleOpen
+        }));
       });
     }
     return _react2['default'].createElement(
@@ -174,12 +221,18 @@ Accordion.defaultProps = {
     titleColorActive: '#fff',
     contentBackground: '#fff',
     contentColor: '#000'
-  }
+  },
+  multipleOpen: false,
+  firstOpen: true,
+  activeClickClose: true
 };
 
 Accordion.propTypes = {
   data: _react.PropTypes.array.isRequired,
-  styles: _react.PropTypes.object
+  styles: _react.PropTypes.object,
+  multipleOpen: _react.PropTypes.bool,
+  activeClickClose: _react.PropTypes.bool,
+  firstOpen: _react.PropTypes.bool
 };
 
 exports['default'] = _reactJss2['default'](styles)(Accordion);

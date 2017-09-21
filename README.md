@@ -41,11 +41,21 @@ const data = [
   }
 ];
 
-<Accordion { ...this.props } data={ data } />
+<Accordion data={ data } />
 
 ```
 
-You can also set some style ovverides for the core colours in the component
+### Cofiguration options
+
+as well as passing in the data array to populate the accordion you can also use the following config options:
+
+- `multipleOpen: PropTypes.bool` default is `false` - toggles whether we have one or multiple items open at once
+- `activeClickClose: PropTypes.bool` default is `true` - toggles functionality of whether a click on an open accordion closes it or we enforce at least one item being open
+- `firstOpen: PropTypes.bool` default is `true` - toggles whether we start with the first item open
+
+
+
+You can also set some style overrides for the core colours in the component
 
 ```
 const styles = {
