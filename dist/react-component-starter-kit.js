@@ -87,6 +87,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
@@ -150,15 +152,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  _createClass(AccordionItem, [{
+	    key: 'shouldRender',
+	    value: function shouldRender() {
+	      var _props = this.props;
+	      var i = _props.i;
+	      var active = _props.active;
+	      var multipleOpen = _props.multipleOpen;
+
+	      if (multipleOpen) {
+	        return active.activeTabs.includes(i);
+	      } else {
+	        return active.activeTab === i;
+	      }
+	    }
+	  }, {
 	    key: 'renderContent',
 	    value: function renderContent() {
-	      var _props = this.props;
-	      var classes = _props.classes;
-	      var i = _props.i;
-	      var item = _props.item;
-	      var active = _props.active;
+	      var _props2 = this.props;
+	      var classes = _props2.classes;
+	      var item = _props2.item;
 
-	      if (i == active) {
+	      var shouldRender = this.shouldRender();
+	      if (shouldRender) {
 	        return _react2['default'].createElement(
 	          'div',
 	          { className: 'accordion__content ' + classes.accordionContent },
@@ -170,10 +185,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _props2 = this.props;
-	      var classes = _props2.classes;
-	      var i = _props2.i;
-	      var item = _props2.item;
+	      var _this = this;
+
+	      var _props3 = this.props;
+	      var classes = _props3.classes;
+	      var i = _props3.i;
+	      var item = _props3.item;
 
 	      return _react2['default'].createElement(
 	        'div',
@@ -181,8 +198,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _react2['default'].createElement(
 	          'h4',
 	          { className: 'accordion__title ' + classes.accordionTitle,
-	            'data-index': i,
-	            onClick: this.props.itemClicked(i) },
+	            onClick: function () {
+	              return _this.props.itemClicked(i);
+	            } },
 	          item.label
 	        ),
 	        this.renderContent()
@@ -196,7 +214,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	AccordionItem.propTypes = {
 	  data: _react.PropTypes.array.isRequired,
 	  i: _react.PropTypes.number.isRequired,
-	  classes: _react.PropTypes.object.isRequired
+	  classes: _react.PropTypes.object.isRequired,
+	  multipleOpen: _react.PropTypes.bool
 	};
 
 	var Accordion = (function (_Component2) {
@@ -207,27 +226,59 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _get(Object.getPrototypeOf(Accordion.prototype), 'constructor', this).call(this, props);
 	    this.state = {
-	      activeTab: 0
+	      activeTab: '',
+	      activeTabs: [] // If we use the multiple open options
 	    };
 	  }
 
 	  _createClass(Accordion, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      console.log(this.props.firstOpen);
+	      if (this.props.firstOpen) {
+	        this.setState({
+	          activeTab: 0,
+	          activeTabs: [0]
+	        });
+	      }
+	    }
+	  }, {
 	    key: 'toggleAccordion',
-	    value: function toggleAccordion() {
-	      var _this = this;
-
-	      return function (e) {
-	        _this.setState({ activeTab: e.target.getAttribute('data-index') });
-	      };
+	    value: function toggleAccordion(i) {
+	      if (!this.props.multipleOpen) {
+	        this.toggleAccordionSingle(i);
+	      } else {
+	        this.toggleAccordionMultiple(i);
+	      }
+	    }
+	  }, {
+	    key: 'toggleAccordionSingle',
+	    value: function toggleAccordionSingle(i) {
+	      if (this.props.activeClickClose && i === this.state.activeTab) {
+	        this.setState({ activeTab: '' });
+	      } else {
+	        this.setState({ activeTab: i });
+	      }
+	    }
+	  }, {
+	    key: 'toggleAccordionMultiple',
+	    value: function toggleAccordionMultiple(i) {
+	      if (this.state.activeTabs.includes(i)) {
+	        var index = this.state.activeTabs.indexOf(i);
+	        this.setState({ activeTabs: [].concat(_toConsumableArray(this.state.activeTabs.slice(0, index)), _toConsumableArray(this.state.activeTabs.slice(index + 1))) });
+	      } else {
+	        this.setState({ activeTabs: [].concat(_toConsumableArray(this.state.activeTabs), [i]) });
+	      }
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _this2 = this;
 
-	      var _props3 = this.props;
-	      var classes = _props3.classes;
-	      var data = _props3.data;
+	      var _props4 = this.props;
+	      var classes = _props4.classes;
+	      var data = _props4.data;
+	      var multipleOpen = _props4.multipleOpen;
 
 	      var accordionItems = undefined;
 	      if (data) {
@@ -236,10 +287,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            key: i,
 	            i: i,
 	            item: item,
-	            active: _this2.state.activeTab,
-	            itemClicked: function () {
-	              return _this2.toggleAccordion();
-	            } }));
+	            active: _this2.state,
+	            itemClicked: function (i) {
+	              return _this2.toggleAccordion(i);
+	            },
+	            multipleOpen: multipleOpen
+	          }));
 	        });
 	      }
 	      return _react2['default'].createElement(
@@ -263,12 +316,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    titleColorActive: '#fff',
 	    contentBackground: '#fff',
 	    contentColor: '#000'
-	  }
+	  },
+	  multipleOpen: false,
+	  firstOpen: true,
+	  activeClickClose: true
 	};
 
 	Accordion.propTypes = {
 	  data: _react.PropTypes.array.isRequired,
-	  styles: _react.PropTypes.object
+	  styles: _react.PropTypes.object,
+	  multipleOpen: _react.PropTypes.bool,
+	  activeClickClose: _react.PropTypes.bool,
+	  firstOpen: _react.PropTypes.bool
 	};
 
 	exports['default'] = (0, _reactJss2['default'])(styles)(Accordion);
