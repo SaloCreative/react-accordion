@@ -49,16 +49,12 @@ var styles = {
     }
   },
   accordionContent: {
-    display: 'none',
     padding: '20px',
     background: function background(props) {
       return props.styles.contentBackground;
     },
     color: function color(props) {
       return props.styles.contentColor;
-    },
-    '.active &': {
-      display: 'block'
     }
   }
 };
@@ -72,20 +68,32 @@ var AccordionItem = (function (_Component) {
     _Component.apply(this, arguments);
   }
 
-  AccordionItem.prototype.render = function render() {
+  AccordionItem.prototype.renderContent = function renderContent() {
     var _props = this.props;
     var classes = _props.classes;
     var i = _props.i;
     var item = _props.item;
     var active = _props.active;
 
-    var activeClass = '';
     if (i == active) {
-      activeClass = 'active';
+      return _react2['default'].createElement(
+        'div',
+        { className: 'accordion__content ' + classes.accordionContent },
+        item.content
+      );
     }
+    return null;
+  };
+
+  AccordionItem.prototype.render = function render() {
+    var _props2 = this.props;
+    var classes = _props2.classes;
+    var i = _props2.i;
+    var item = _props2.item;
+
     return _react2['default'].createElement(
       'div',
-      { className: 'accordion__item ' + classes.accordionItem + ' ' + activeClass },
+      { className: 'accordion__item ' + classes.accordionItem },
       _react2['default'].createElement(
         'h4',
         { className: 'accordion__title ' + classes.accordionTitle,
@@ -93,11 +101,7 @@ var AccordionItem = (function (_Component) {
           onClick: this.props.itemClicked(i) },
         item.label
       ),
-      _react2['default'].createElement(
-        'div',
-        { className: 'accordion__content ' + classes.accordionContent },
-        item.content
-      )
+      this.renderContent()
     );
   };
 
@@ -133,9 +137,9 @@ var Accordion = (function (_Component2) {
   Accordion.prototype.render = function render() {
     var _this2 = this;
 
-    var _props2 = this.props;
-    var classes = _props2.classes;
-    var data = _props2.data;
+    var _props3 = this.props;
+    var classes = _props3.classes;
+    var data = _props3.data;
 
     var accordionItems = undefined;
     if (data) {
