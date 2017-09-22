@@ -234,12 +234,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(Accordion, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      console.log(this.props.firstOpen);
 	      if (this.props.firstOpen) {
 	        this.setState({
 	          activeTab: 0,
 	          activeTabs: [0]
 	        });
+	      }
+	    }
+	  }, {
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate(prevProps) {
+	      if (this.props.closeAll || this.props.openAll) {
+	        if (this.props.closeAll !== prevProps.closeAll) {
+	          this.closeAll();
+	        } else if (this.props.openAll !== prevProps.openAll) {
+	          this.openAll();
+	        }
 	      }
 	    }
 	  }, {
@@ -269,6 +279,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      } else {
 	        this.setState({ activeTabs: [].concat(_toConsumableArray(this.state.activeTabs), [i]) });
 	      }
+	    }
+	  }, {
+	    key: 'closeAll',
+	    value: function closeAll() {
+	      this.setState({ activeTabs: [], activeTab: '' });
+	    }
+	  }, {
+	    key: 'openAll',
+	    value: function openAll() {
+	      var arr = [];
+	      this.props.data.forEach(function (value, i) {
+	        arr.push(i);
+	      });
+	      this.setState({ activeTabs: arr, activeTab: 0 });
 	    }
 	  }, {
 	    key: 'render',

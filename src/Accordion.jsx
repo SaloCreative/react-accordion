@@ -86,7 +86,6 @@ export default class Accordion extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.firstOpen);
     if (this.props.firstOpen) {
       this.setState(
         {
@@ -94,6 +93,16 @@ export default class Accordion extends Component {
           activeTabs: [0]
         }
       );
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.closeAll || this.props.openAll) {
+      if (this.props.closeAll !== prevProps.closeAll) {
+        this.closeAll();
+      } else if (this.props.openAll !== prevProps.openAll) {
+        this.openAll();
+      }
     }
   }
 
@@ -126,6 +135,18 @@ export default class Accordion extends Component {
         i
       ] });
     }
+  }
+
+  closeAll() {
+    this.setState({ activeTabs: [], activeTab: '' })
+  }
+
+  openAll() {
+    let arr = [];
+    this.props.data.forEach((value, i) => {
+      arr.push(i);
+    });
+    this.setState({ activeTabs: arr, activeTab: 0 });
   }
 
   render() {
